@@ -13,7 +13,7 @@ var TransBooklet = function()
    ****************************************************************************/
 
   var EXTJS_V = 'extjs-3.3.0';
-  var G_API_KEY = ''; // <-- Put your API Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
+  var G_API_KEY = ''; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var TRANSLATE_URL = 'https://www.googleapis.com/language/translate/v2?key='+G_API_KEY;
   var LANGUAGES = [];
   var DEFAULT_FROM_LANG = 'en';
