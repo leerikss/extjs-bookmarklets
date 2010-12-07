@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<title>Translation Bookmarklet</title>
+<meta charset="utf-8" />
+</head>
+
+<body>
+<h1>Translation Bookmarklet (Beta)</h1>
+
+<h3>Installation</h3>
+<p>
+<a href="javascript:(function(){ document.body.appendChild(document.createElement('script')).src='http://www.leif.fi/translate-bookmarklet/translate-bookmarklet.js';} )();">Translate</a>
+&nbsp;&lt;&lt;-- Drag this link into your bookmarks bar, or right click and Add to Favorites
+</p>
+
+<h3>Usage</h3>
+Select text on any page, and click the "Translate" bookmark link. <br/>
+The bookmarklet attempts to auto-detect the language from your selection, pops up a 
+floating resizable drag & drop window,  and translates the text into a language 
+of your choice (for now defaults to Finnish).
+You can also manually copy & paste the text into the source textarea, and change the source and 
+translation language.
+
+<h3>Requirements</h3>
+A valid browser; newest version of Chrome, Firefox, Opera, Safari, or IE 7+
+
+<h3> 
+<h3>Known issues</h3>
+<ul>
+<li>Depending on the CSS used on various pages, the bookmarklet might look a bit strange</li>
+<li>Depending on the JavaScript used on various pages, the bookmarklet might not work as expected, or not work at all</li>
+<li>Text selection might not work on all pages (ex. hotmail, gmail). In this case copy & paste the text manually</li>
+<li>The bookmarklet loads dynamically quite an amount of resources (650 kB) from various locations. 
+If some of the resources fail to load, the bookmarklet might look strange, or it might not work at all</li>
+<li>IE: On some pages, won't work at all (ex. baidu.com)</li>
+</ul>
+
+<h3>Credits</h3>
+<ul>
+<li><a href="http://code.google.com/apis/language/">Google Language API</a></li>
+<li><a href="http://www.sencha.com/products/js/">ExtJS</a></li>
+<li><a href="http://www.sencha.com/products/jsbuilder/">JSBuilder2</a></li>
+<li><a href="http://developer.yahoo.com/yui/compressor/">YUI Compressor</a>
+<li><a href="http://ant.apache.org/">Apache Ant</a></li>
+<li><a href="http://www.eclipse.org/">Eclipse</a></li>
+</ul>  
+
+<h3>License</h3>
+<a href="http://gplv3.fsf.org/">GPLv3</a>
+
+<h3>Source Code</h3>
+Coming soon
+
+<h3>Author</h3>
+Leif Eriksson<br/>
+<a href="mailto:leif@leif.fi">leif@leif.fi</a><br/>
+<a href="http://leif.fi/">http://www.leif.fi/</a>
+</body>
+
+</html>
