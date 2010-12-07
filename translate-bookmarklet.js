@@ -16,7 +16,7 @@ var TransBooklet = function()
   var G_API_KEY = ''; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var TRANSLATE_URL = 'https://www.googleapis.com/language/translate/v2?key='+G_API_KEY;
   var LANGUAGES = [];
-  var DEFAULT_FROM_LANG = 'en';
+  var TRANSLATE_FROM = 'en';
   var WIDTH = 300;
   var HEIGHT = 400;
   var OFFSET = 30;
@@ -160,13 +160,13 @@ var TransBooklet = function()
 
     // Set from language from session, if exists
     var from = ( typeof(Ext.state.Manager.get('from') ) != 'undefined') ? 
-        Ext.state.Manager.get('from') : DEFAULT_FROM_LANG;
+        Ext.state.Manager.get('from') : TRANSLATE_FROM;
 
     // Set to language from session, default value, or client
     var to = ( typeof(Ext.state.Manager.get('to') ) != 'undefined') ? 
         Ext.state.Manager.get('to') : 
-      ( typeof(window._DEFAULT_TO_LANG) != 'undefined' && window._DEFAULT_TO_LANG != null ) ?
-          window._DEFAULT_TO_LANG : _matchLang( _getClientLang() );
+      ( typeof(window._TRANSLATE_TO) != 'undefined' && window._TRANSLATE_TO != null ) ?
+          window._TRANSLATE_TO : _matchLang( _getClientLang() );
     
     // Windows items
     var items = 
