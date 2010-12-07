@@ -13,11 +13,10 @@ var TransBooklet = function()
    ****************************************************************************/
 
   var EXTJS_V = 'extjs-3.3.0';
-  var G_API_KEY = 'AIzaSyCdzVWP18WnxcF0j78pXnXiKLbgGzS3zsU';
+  var G_API_KEY = ''; // <-- Put your API Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var TRANSLATE_URL = 'https://www.googleapis.com/language/translate/v2?key='+G_API_KEY;
   var LANGUAGES = [];
   var DEFAULT_FROM_LANG = 'en';
-  var DEFAULT_TO_LANG = 'fi'; // TODO: Make this dynamic
   var WIDTH = 300;
   var HEIGHT = 400;
   var OFFSET = 30;
@@ -35,8 +34,8 @@ var TransBooklet = function()
     // Set all js files to be loaded
     var js =  
       [ 
-       ['google.load',	'https://www.google.com/jsapi?key='+G_API_KEY],
-       ['Ext',	'http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/adapter/ext/ext-base.js'],
+       ['google.load', 'https://www.google.com/jsapi?key='+G_API_KEY],
+       ['Ext', 'http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/adapter/ext/ext-base.js'],
        ['Ext.data.ArrayStore','http://www.leif.fi/translate-bookmarklet/ext-min.js']
 //     ['Ext.data.ArrayStore','http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/ext-all.js']
        ];
@@ -59,7 +58,7 @@ var TransBooklet = function()
           'callback': function()
           {
             // Init language list
-            _setLangList();			
+            _setLangList();   
 
             if( typeof(Ext) == 'undefined' ||
                 typeof(Ext.state) == 'undefined' ||
@@ -157,7 +156,7 @@ var TransBooklet = function()
           fields: ['value','name'],
           data: LANGUAGES
         } 
-    );	
+    ); 
 
     // Set from language from session, if exists
     var from = ( typeof(Ext.state.Manager.get('from') ) != 'undefined') ? 
@@ -166,9 +165,9 @@ var TransBooklet = function()
     // Set to language from session, default value, or client
     var to = ( typeof(Ext.state.Manager.get('to') ) != 'undefined') ? 
         Ext.state.Manager.get('to') : 
-      ( typeof(DEFAULT_TO_LANG) != 'undefined' && DEFAULT_TO_LANG != false ) ?
-          DEFAULT_TO_LANG : _matchLang( _getClientLang() );
-
+      ( typeof(window._DEFAULT_TO_LANG) != 'undefined' && window._DEFAULT_TO_LANG != null ) ?
+          window._DEFAULT_TO_LANG : _matchLang( _getClientLang() );
+    
     // Windows items
     var items = 
       [ 
@@ -223,7 +222,7 @@ var TransBooklet = function()
        {
          xtype:'panel',
          title: 'Translation',
-         flex: 3,	
+         flex: 3, 
          layout: 
          {
            type: 'vbox',
@@ -390,7 +389,7 @@ var TransBooklet = function()
 
   var _hideWin = function()
   {
-    window._TBWin.hide();		
+    window._TBWin.hide();  
   };
 
   var _getClientLang = function()
