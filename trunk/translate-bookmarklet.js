@@ -25,7 +25,7 @@ var TransBooklet = function()
   var _loadFiles = function(readyFn)
   {
     // Load css
-    _loadCSS('http://www.leif.fi/translate-bookmarklet/ext-min.css');
+    _loadCSS('http://www.leif.fi/bookmarklets/ext-min.css');
 
     // Hack: Pages with an older Ext loaded doesn't work properly,
     // so I reset it here. This might break page functionality though.
@@ -36,7 +36,7 @@ var TransBooklet = function()
       [ 
        ['google.load', 'https://www.google.com/jsapi?key='+G_API_KEY],
        ['Ext', 'http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/adapter/ext/ext-base.js'],
-       ['Ext.data.ArrayStore','http://www.leif.fi/translate-bookmarklet/ext-min.js']
+       ['Ext.data.ArrayStore','http://www.leif.fi/bookmarklets/ext-min.js']
 //     ['Ext.data.ArrayStore','http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/ext-all.js']
        ];
 
