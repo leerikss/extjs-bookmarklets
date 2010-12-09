@@ -3584,6 +3584,11 @@ body.x-body-masked .x-window-plain .x-window-mc {
 {
 	background:none;
 }
+.x-window-footer div, .x-window-footer table, .x-window-footer th, .x-window-footer tr, .x-window-footer td
+{
+    vertical-align:top;
+	text-align:center;
+}	
 .x-toolbar-left>table
 {
 	width:auto;
