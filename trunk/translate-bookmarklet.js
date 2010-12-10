@@ -30,7 +30,7 @@ var TransBooklet = function()
     // Load css
     _loadCSS('http://www.leif.fi/bookmarklets/ext-min.css');
 
-    // Hack: Pages with an older Ext loaded doesn't work properly,
+    // Hack: Pages with an older Ext loaded don't work properly,
     // so I reset it here. This might break page functionality though.
     Ext = undefined;
 
@@ -123,9 +123,8 @@ var TransBooklet = function()
       js.onload = onload;
     }
     
-    var body  = _findNode('body');
-    if(!body)
-      return;
+    var body  = document.getElementsByTagName('body')[0];
+    if(!body) return;
     
     body.appendChild(js);
   };
@@ -137,9 +136,8 @@ var TransBooklet = function()
     ss.setAttribute('type','text/css');
     ss.setAttribute('href',href);
 
-    var head  = _findNode('head');
-    if(!head)
-      return;
+    var head  = document.getElementsByTagName('head')[0];
+    if(!head) return;
     
     if(first)
       head.insertBefore(ss,head.firstChild);
@@ -147,24 +145,17 @@ var TransBooklet = function()
       head.appendChild(ss);
   };
 
-  var _findNode = function(nn)
+  var _getWinSize = function()
   {
-    // No frameset
-    if(top.frames.length == 0 && document.getElementsByTagName(nn) )
-      return document.getElementsByTagName(nn)[0];
-    // Frameset
-    for(var i=0; i<top.frames.length; i++)
-    {
-      var f = top.frames[i];
-      if ( f.contentDocument && f.contentDocument.getElementsByTagName(nn) ) 
-        return f.contentDocument.getElementsByTagName(nn)[0];
-      else if ( f.contentWindow && f.contentWindow.document.getElementsByTagName(nn) ) 
-        return f.contentWindow.document.getElementsByTagName(nn)[0];
-    }
-    alert("Error: No '"+nn+"' element found!");
-    return false;
+    // All except IE
+    if( window.innerWidth && window.innerHeight )
+      return { width: window.innerWidth, height: window.innerHeight };
+      
+    // IE
+    return { width: document.documentElement.clientWidth, 
+      height: documen.documentElement.clientHeight };
   };
-
+  
   var _setLangList = function()
   {
     for(var name in google.language.Languages)
@@ -374,15 +365,6 @@ var TransBooklet = function()
     );
   };
 
-  var _getWinSize = function()
-  {
-    if( window.innerWidth && window.innerHeight )
-      return { width: window.innerWidth, height: window.innerHeight };
-      // IE
-      return { width: document.documentElement.clientWidth, 
-        height: document.documentElement.clientHeight };
-  }
-
   var _showWin = function()
   {
     var opened = WIN.isVisible();
@@ -395,13 +377,14 @@ var TransBooklet = function()
     {
       var pos = WIN.getPosition();
       var s = Ext.getBody().getScroll();
-      var x = pos[0]-s.left;
-      var y = pos[1]-s.top;
-      if( (x + WIDTH) > _getWinSize().width ) 
-        x = ( _getWinSize().width - WIDTH - OFFSET );
+      var x = pos[0] - s.left;
+      var y = pos[1] - s.top;
+      var size = _getWinSize();
+      if( (x + WIDTH) > size.width ) 
+        x = ( size.width - WIDTH - OFFSET );
       if ( x < 0 ) x = OFFSET;
-      if ( y + HEIGHT > _getWinSize().height ) 
-        y = ( _getWinSize().height - HEIGHT - OFFSET );
+      if ( y + HEIGHT > size.height ) 
+        y = ( size.height - HEIGHT - OFFSET );
       if( y < 0 ) y = OFFSET;
       WIN.setPosition(x,y);
     }
@@ -510,6 +493,10 @@ var TransBooklet = function()
   return {
     init: function() 
     { 
+      // Warn about framesets for now, TODO later
+      if( document.getElementsByTagName('frame').length > 0 )
+        alert("Warning: This page uses framesets! Translation Bookmarklet will probably fail.");
+      
       if( !JS_STATE )
       {
         JS_STATE = 'loading';
