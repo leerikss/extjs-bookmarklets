@@ -144,8 +144,6 @@ var MapBooklet = function()
             type: 'vbox',
             align: 'stretch'
           },
-          //x: ( (_getWinSize().width/2) - (WIDTH/2) ),
-          //y: ( (_getWinSize().height/2) - (HEIGHT/2) ),
           width: WIDTH,
           height:HEIGHT,
           minWidth: WIDTH,
@@ -154,11 +152,11 @@ var MapBooklet = function()
           buttonAlign:'center',
           closable: true,
           closeAction: 'hide',
-//          items: items,
           //stateId: 'win',
           draggable: true,
           maximizable: true,
           // minimizable: true,
+          /*
           buttons: 
             [
              {
@@ -173,6 +171,7 @@ var MapBooklet = function()
                }
              }
              ], 
+             */
              style: style,
              listeners:
              {
@@ -272,9 +271,8 @@ var MapBooklet = function()
     {
       var mapOpts = 
       {
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        streetViewControl: true
+        zoom: 16,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       MAP = new google.maps.Map(WIN.body.dom, mapOpts);
     }
@@ -297,7 +295,7 @@ var MapBooklet = function()
             if(!MARKER)
             {
               MARKER = new google.maps.Marker({position:ll});
-              m.setMap(MAP);
+              MARKER.setMap(MAP);
             }
             else
               MARKER.setPosition(ll);
