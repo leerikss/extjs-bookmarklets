@@ -13,14 +13,17 @@ var TransBooklet = function()
    ****************************************************************************/
 
   var EXTJS_V = 'extjs-3.3.0';
-  var G_API_KEY = ''; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
-  var TRANSLATE_URL = 'https://www.googleapis.com/language/translate/v2?key='+G_API_KEY;
+  var G_API_KEY = 'AIzaSyCdzVWP18WnxcF0j78pXnXiKLbgGzS3zsU'; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var LANGUAGES = [];
   var TRANSLATE_FROM = 'en';
   var WIDTH = 300;
   var HEIGHT = 400;
   var OFFSET = 30;
-
+  
+  var JS_STATE = false;
+  var IE_QUIRK = false;
+  var WIN = false;
+  
   // Load external resources
   var _loadFiles = function(readyFn)
   {
@@ -79,7 +82,7 @@ var TransBooklet = function()
             // Init window
             _initWin();
 
-            window._TBJS = 'loaded';
+            JS_STATE = 'loaded';
           } 
         } 
     );
@@ -119,9 +122,14 @@ var TransBooklet = function()
       js.onabort = e;
       js.onload = onload;
     }
-    document.getElementsByTagName('body')[0].appendChild(js);
+    
+    var body  = _findNode('body');
+    if(!body)
+      return;
+    
+    body.appendChild(js);
   };
-
+  
   var _loadCSS = function(href,first)
   {
     var ss = document.createElement('link');
@@ -129,11 +137,32 @@ var TransBooklet = function()
     ss.setAttribute('type','text/css');
     ss.setAttribute('href',href);
 
-    var head  = document.getElementsByTagName('head')[0];
+    var head  = _findNode('head');
+    if(!head)
+      return;
+    
     if(first)
       head.insertBefore(ss,head.firstChild);
     else
       head.appendChild(ss);
+  };
+
+  var _findNode = function(nn)
+  {
+    // No frameset
+    if(top.frames.length == 0 && document.getElementsByTagName(nn) )
+      return document.getElementsByTagName(nn)[0];
+    // Frameset
+    for(var i=0; i<top.frames.length; i++)
+    {
+      var f = top.frames[i];
+      if ( f.contentDocument && f.contentDocument.getElementsByTagName(nn) ) 
+        return f.contentDocument.getElementsByTagName(nn)[0];
+      else if ( f.contentWindow && f.contentWindow.document.getElementsByTagName(nn) ) 
+        return f.contentWindow.document.getElementsByTagName(nn)[0];
+    }
+    alert("Error: No '"+nn+"' element found!");
+    return false;
   };
 
   var _setLangList = function()
@@ -267,20 +296,20 @@ var TransBooklet = function()
     if (window.navigator.appName == "Microsoft Internet Explorer")
     {
       if (document.documentMode && document.documentMode == 5) // IE8
-        window._IE_QUIRK = true;
+        IE_QUIRK = true;
       else if( document.compatMode && document.compatMode != "CSS1Compat")
-        window._IE_QUIRK = true;
+        IE_QUIRK = true;
     }
     var style = { position: "fixed"};
     var shadow = true;
-    if(window._IE_QUIRK)
+    if(IE_QUIRK)
     {
       style = {};
       shadow = false;
     }
 
     // Window
-    window._TBWin = new Ext.Window( 
+    WIN = new Ext.Window( 
         {
           title: 'Translate Bookmarklet (Powered by Google)',
           layout: 
@@ -315,7 +344,7 @@ var TransBooklet = function()
                text: 'Close',
                handler: function()
                {
-                 window._TBWin.hide();
+                 WIN.hide();
                }
              }
              ], 
@@ -325,16 +354,15 @@ var TransBooklet = function()
                'afterrender': function()
                {
                  // Substract scrollbar offsets from x,y
-                 var w = window._TBWin;
                  Ext.sequence(
-                     w.dd, 
+                     WIN.dd, 
                      'endDrag', 
                      function()
                      { 
-                       if(!window._IE_QUIRK)
+                       if(!IE_QUIRK)
                        {
                          var s = Ext.getBody().getScroll();
-                         w.setPosition( (w.x-s.left), (w.y-s.top) );
+                         WIN.setPosition( (WIN.x-s.left), (WIN.y-s.top) );
                        }
                      } 
                  )
@@ -357,16 +385,15 @@ var TransBooklet = function()
 
   var _showWin = function()
   {
-    var w = window._TBWin;
-    var opened = w.isVisible();
+    var opened = WIN.isVisible();
 
     // Show win
-    w.show();
+    WIN.show();
 
     // Make sure css fixed window allways stays visible
-    if(!opened && !window._IE_QUIRK)
+    if(!opened && !IE_QUIRK)
     {
-      var pos = w.getPosition();
+      var pos = WIN.getPosition();
       var s = Ext.getBody().getScroll();
       var x = pos[0]-s.left;
       var y = pos[1]-s.top;
@@ -376,12 +403,12 @@ var TransBooklet = function()
       if ( y + HEIGHT > _getWinSize().height ) 
         y = ( _getWinSize().height - HEIGHT - OFFSET );
       if( y < 0 ) y = OFFSET;
-      w.setPosition(x,y);
+      WIN.setPosition(x,y);
     }
 
     // In IE Quirks Mode, simply center the window
-    else if(window._IE_QUIRK)
-      w.center();
+    else if(IE_QUIRK)
+      WIN.center();
     
     // Tranlsate
     _translateSel();
@@ -389,7 +416,7 @@ var TransBooklet = function()
 
   var _hideWin = function()
   {
-    window._TBWin.hide();  
+    WIN.hide();  
   };
 
   var _getClientLang = function()
@@ -483,18 +510,17 @@ var TransBooklet = function()
   return {
     init: function() 
     { 
-      if( typeof(window._TBJS) == 'undefined' || window._TBJS == null )
+      if( !JS_STATE )
       {
-        window._TBJS = "loading";
+        JS_STATE = 'loading';
         _loadFiles(_onLoad); 
       }
-
     },
 
 
     show: function() 
-    { 
-      if( typeof(window._TBJS) == 'undefined' || window._TBJS != 'loaded' )
+    {
+      if( JS_STATE != 'loaded' )
         setTimeout('TransBooklet.show()', 100);
       else
         _showWin(); 
