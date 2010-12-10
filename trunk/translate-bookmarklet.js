@@ -3,7 +3,7 @@ Copyright (c) 2010: Leif Eriksson (http://leif.fi/)
 License: GPLv3 (http://www.gnu.org/licenses/gpl.html)
 
 This software depends on the ExtJS library (http://www.sencha.com/products/js/), 
-and the Google Translate API (http://code.google.com/apis/language/translate/overview.html)
+and the Google Translate API v2 (http://code.google.com/apis/language/translate/v2/getting_started.html)
  */
 
 var TransBooklet = function()
@@ -13,7 +13,7 @@ var TransBooklet = function()
    ****************************************************************************/
 
   var EXTJS_V = 'extjs-3.3.0';
-  var G_API_KEY = ''; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
+  var G_API_KEY = 'AIzaSyCdzVWP18WnxcF0j78pXnXiKLbgGzS3zsU'; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var LANGUAGES = [];
   var TRANSLATE_FROM = 'en';
   var WIDTH = 300;
