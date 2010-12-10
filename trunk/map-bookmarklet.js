@@ -144,6 +144,8 @@ var MapBooklet = function()
             type: 'vbox',
             align: 'stretch'
           },
+          x: ( _getWinSize().width - WIDTH - OFFSET ),
+          y: OFFSET,
           width: WIDTH,
           height:HEIGHT,
           minWidth: WIDTH,
