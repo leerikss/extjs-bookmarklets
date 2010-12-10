@@ -20,6 +20,8 @@ var MapBooklet = function()
   var JS_STATE = false;
   var IE_QUIRK = false;
   var WIN = false;
+  var MAP = false;
+  var MARKER = false;
   
   // Load external resources
   var _loadFiles = function(readyFn)
@@ -29,15 +31,15 @@ var MapBooklet = function()
 
     // Hack: Pages with an older Ext loaded don't work properly,
     // so I reset it here. This might break page functionality though.
-    Ext = undefined;
+    // Ext = undefined;
 
     // Set all js files to be loaded
     var js =  
       [ 
-       ['http://maps.google.com/maps/api/js?sensor=false'],
        ['Ext', 'http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/adapter/ext/ext-base.js'],
-       ['Ext.data.ArrayStore','http://www.leif.fi/bookmarklets/ext-min.js']
-//     ['Ext.data.ArrayStore','http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/ext-all.js']
+       ['Ext.data.ArrayStore','http://www.leif.fi/bookmarklets/ext-min.js'],
+//     ['Ext.data.ArrayStore','http://extjs-public.googlecode.com/svn/tags/'+EXTJS_V+'/release/ext-all.js'],
+       ['google.maps','http://maps.google.com/maps/api/js?sensor=false&callback=MapBooklet.onLoad']
        ];
 
     // Load files
@@ -49,14 +51,7 @@ var MapBooklet = function()
   {
     // Init Ext
     Ext.BLANK_IMAGE_URL = 'http://extjs-public.googlecode.com/svn/tags/'+
-    EXTJS_V+'/release/resources/images/default/s.gif';
-    Ext.state.Manager.setProvider( 
-        new Ext.state.CookieProvider( 
-            {
-              expires: new Date( new Date().getTime()+(1000*60*60*24*365) )
-            } 
-        ) 
-    );
+      EXTJS_V+'/release/resources/images/default/s.gif';
 
     // Init window
     _initWin();
@@ -93,7 +88,7 @@ var MapBooklet = function()
     if(onload)
     {
       js.onreadystatechange = onload; // <-- IE only
-      var e = function() { alert("Error: Failed to load "+js); }
+      var e = function() { alert("Error: Failed to load '"+src+"'"); }
       js.onerror = e;
       js.onabort = e;
       js.onload = onload;
@@ -149,8 +144,8 @@ var MapBooklet = function()
             type: 'vbox',
             align: 'stretch'
           },
-          x: ( (_getWinSize().width/2) - (WIDTH/2) ),
-          y: ( (_getWinSize().height/2) - (HEIGHT/2) ),
+          //x: ( (_getWinSize().width/2) - (WIDTH/2) ),
+          //y: ( (_getWinSize().height/2) - (HEIGHT/2) ),
           width: WIDTH,
           height:HEIGHT,
           minWidth: WIDTH,
@@ -166,6 +161,10 @@ var MapBooklet = function()
           // minimizable: true,
           buttons: 
             [
+             {
+               text: 'Show',
+               handler: _showWin
+             },
              {
                text: 'Close',
                handler: function()
@@ -194,6 +193,11 @@ var MapBooklet = function()
                  )
 
                  // TODO: Set shadow css position fixed
+               },
+               
+               'resize': function()
+               {
+                 google.maps.event.trigger(MAP, 'resize')
                }
              }
         }
@@ -202,13 +206,13 @@ var MapBooklet = function()
 
   var _showWin = function()
   {
-    var opened = WIN.isVisible();
+    var open = WIN.isVisible();
 
     // Show win
     WIN.show();
 
-    // Make sure css fixed window allways stays visible
-    if(!opened && !IE_QUIRK)
+    // Make sure css fixed window always stays visible
+    if(!open && !IE_QUIRK)
     {
       var pos = WIN.getPosition();
       var s = Ext.getBody().getScroll();
@@ -227,6 +231,10 @@ var MapBooklet = function()
     // In IE Quirks Mode, simply center the window
     else if(IE_QUIRK)
       WIN.center();
+    
+    var txt = _getSel();
+    if(txt != '')
+      _showMap(''+txt);
   };
 
   var _hideWin = function()
@@ -257,6 +265,46 @@ var MapBooklet = function()
     return txt;
   };
 
+  var _showMap = function(a)
+  {
+    // Init Google Map
+    if(!MAP)
+    {
+      var mapOpts = 
+      {
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        streetViewControl: true
+      };
+      MAP = new google.maps.Map(WIN.body.dom, mapOpts);
+    }
+      
+    // Get position from address
+    var geo = new google.maps.Geocoder();
+    geo.geocode( { address:a },
+        function(results,status) 
+        {
+          if(status == google.maps.GeocoderStatus.OK)
+          {
+            // Take first result as default
+            var result = results[0];
+            var ll = result.geometry.location;
+            
+            // Show map
+            MAP.setCenter(ll);
+            
+            // Set Marker
+            if(!MARKER)
+            {
+              MARKER = new google.maps.Marker({position:ll});
+              m.setMap(MAP);
+            }
+            else
+              MARKER.setPosition(ll);
+          }
+        });
+  };
+  
   /*****************************************************************************
    * PUBLIC SPACE
    ****************************************************************************/
@@ -271,7 +319,7 @@ var MapBooklet = function()
       if( !JS_STATE )
       {
         JS_STATE = 'loading';
-        _loadFiles(_onLoad); 
+        _loadFiles(); 
       }
     },
 
@@ -282,6 +330,11 @@ var MapBooklet = function()
         setTimeout('MapBooklet.show()', 100);
       else
         _showWin(); 
+    },
+    
+    onLoad: function()
+    {
+      _onLoad();
     }
   }
 }();

@@ -32,7 +32,7 @@ var TransBooklet = function()
 
     // Hack: Pages with an older Ext loaded don't work properly,
     // so I reset it here. This might break page functionality though.
-    Ext = undefined;
+    // Ext = undefined;
 
     // Set all js files to be loaded
     var js =  
@@ -117,7 +117,7 @@ var TransBooklet = function()
     if(onload)
     {
       js.onreadystatechange = onload; // <-- IE only
-      var e = function() { alert("Error: Failed to load "+js); }
+      var e = function() { alert("Error: Failed to load '"+src+"'"); }
       js.onerror = e;
       js.onabort = e;
       js.onload = onload;
@@ -372,7 +372,7 @@ var TransBooklet = function()
     // Show win
     WIN.show();
 
-    // Make sure css fixed window allways stays visible
+    // Make sure css fixed window always stays visible
     if(!opened && !IE_QUIRK)
     {
       var pos = WIN.getPosition();
