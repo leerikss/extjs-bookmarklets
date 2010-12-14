@@ -19,7 +19,8 @@ var TransBooklet = function()
   var WIDTH = 300;
   var HEIGHT = 400;
   var OFFSET = 30;
-  
+  var MAX_TEXT = 1200;
+    
   var JS_STATE = false;
   var IE_QUIRK = false;
   var WIN = false;
@@ -234,7 +235,8 @@ var TransBooklet = function()
               id: 'fromText',
               emptyText: '',
               selectOnFocus: true,
-              flex: 1
+              flex: 1,
+              maxLength: MAX_TEXT
             }
             ]
        },
@@ -437,18 +439,21 @@ var TransBooklet = function()
   var _detectLanguage = function(fn)
   {
     var text = Ext.getCmp('fromText').getValue();
+    
     google.language.detect(
-        text, 
-        function(result) 
+        text.substring(0,MAX_TEXT),
+        function(result)
         {
-          if(!result.error)
+          if(result.error)
+            alert( "Error "+result.error.code+": "+result.error.message);
+          else
           {
             var l = result.language;
             Ext.getCmp('from').setValue(l);
             if(fn)
               fn(text);
           }
-        } 
+        }
     );
   };
 
@@ -471,17 +476,20 @@ var TransBooklet = function()
     var text = Ext.getCmp('fromText').getValue();
     var from = Ext.getCmp('from').getValue();
     var to = Ext.getCmp('to').getValue();
-
     google.language.translate(
-        text, 
+        text.substring(0,MAX_TEXT), 
         from, 
         to, 
         function(result) 
         {
-          if(result.translation)
-          {
-            Ext.getCmp('toText').setValue( result.translation );
-          }
+          if(result.error)
+            alert( "Error "+result.error.code+": "+result.error.message);
+          else if(result.translation)
+            Ext.getCmp('toText').setRawValue( result.translation );
+          // Notify the text was too long
+          if(text.length > MAX_TEXT)
+            alert("Warning: The source text exceeded maximum "+MAX_TEXT+" characters! "+
+                "The exceeding characters were cut off.");
         } 
     );
   };
