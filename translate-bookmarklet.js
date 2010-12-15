@@ -154,7 +154,7 @@ var TransBooklet = function()
       
     // IE
     return { width: document.documentElement.clientWidth, 
-      height: documen.documentElement.clientHeight };
+      height: document.documentElement.clientHeight };
   };
   
   var _setLangList = function()
@@ -302,7 +302,7 @@ var TransBooklet = function()
     }
 
     // Window
-    WIN = new Ext.Window( 
+    WIN = new Ext.Window(
         {
           title: 'Translate Bookmarklet (Powered by Google)',
           layout: 
@@ -444,9 +444,7 @@ var TransBooklet = function()
         text.substring(0,MAX_TEXT),
         function(result)
         {
-          if(result.error)
-            alert( "Error "+result.error.code+": "+result.error.message);
-          else
+          if(!result.error)
           {
             var l = result.language;
             Ext.getCmp('from').setValue(l);
@@ -486,10 +484,10 @@ var TransBooklet = function()
             alert( "Error "+result.error.code+": "+result.error.message);
           else if(result.translation)
             Ext.getCmp('toText').setRawValue( result.translation );
-          // Notify the text was too long
+          // Notify if the text was too long
           if(text.length > MAX_TEXT)
             alert("Warning: The source text exceeded maximum "+MAX_TEXT+" characters! "+
-                "The exceeding characters were cut off.");
+                "The exceeding characters were cut off prior to translation.");
         } 
     );
   };

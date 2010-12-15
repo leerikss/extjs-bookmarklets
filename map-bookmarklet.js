@@ -251,7 +251,7 @@ var MapBooklet = function()
       
     // IE
     return { width: document.documentElement.clientWidth, 
-      height: documen.documentElement.clientHeight };
+      height: document.documentElement.clientHeight };
   };
   
   var _getSel = function()
