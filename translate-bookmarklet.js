@@ -427,12 +427,17 @@ var TransBooklet = function()
   var _getSel = function()
   {
     var txt = '';
+    
     if (window.getSelection)
-      return window.getSelection();
+      txt = window.getSelection();
     else if (document.getSelection)
-      return document.getSelection();
+      txt = document.getSelection();
     else if (document.selection)
-      return document.selection.createRange().text;
+      txt = document.selection.createRange().text;
+    
+    txt = ''+txt;
+    txt = txt.replace(/^\s+|\s+$/g, '');
+    
     return txt;
   };
 
@@ -461,7 +466,7 @@ var TransBooklet = function()
     var text = ''+_getSel();
     if(text != '')
     {
-      Ext.getCmp('fromText').setValue( text );
+      Ext.getCmp('fromText').setValue( text.replace(/^\s+|\s+$/g, '')  );
       _detectLanguage( _translate );
     }
     else
