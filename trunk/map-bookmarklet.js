@@ -235,7 +235,7 @@ var MapBooklet = function()
     
     var txt = _getSel();
     if(txt != '')
-      _showMap(''+txt);
+      _showMap( txt );
   };
 
   var _hideWin = function()
@@ -257,12 +257,17 @@ var MapBooklet = function()
   var _getSel = function()
   {
     var txt = '';
+    
     if (window.getSelection)
-      return window.getSelection();
+      txt = window.getSelection();
     else if (document.getSelection)
-      return document.getSelection();
+      txt = document.getSelection();
     else if (document.selection)
-      return document.selection.createRange().text;
+      txt = document.selection.createRange().text;
+    
+    txt = ''+txt;
+    txt = txt.replace(/^\s+|\s+$/g, '');
+    
     return txt;
   };
 
@@ -273,7 +278,7 @@ var MapBooklet = function()
     {
       var mapOpts = 
       {
-        zoom: 16,
+        zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       MAP = new google.maps.Map(WIN.body.dom, mapOpts);
@@ -281,7 +286,10 @@ var MapBooklet = function()
       
     // Get position from address
     var geo = new google.maps.Geocoder();
-    geo.geocode( { address:a },
+    geo.geocode(
+        {
+          address: a
+        },
         function(results,status) 
         {
           if(status == google.maps.GeocoderStatus.OK)
