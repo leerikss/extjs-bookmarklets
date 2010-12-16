@@ -13,7 +13,7 @@ var TransBooklet = function()
    ****************************************************************************/
 
   var EXTJS_V = 'extjs-3.3.0';
-  var G_API_KEY = ''; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
+  var G_API_KEY = 'AIzaSyCdzVWP18WnxcF0j78pXnXiKLbgGzS3zsU'; // <-- Put your Google API key here (https://code.google.com/apis/console/?pli=1#project:352002749240:apis_apis)
   var LANGUAGES = [];
   var TRANSLATE_FROM = 'en';
   var WIDTH = 300;
@@ -485,10 +485,15 @@ var TransBooklet = function()
         to, 
         function(result) 
         {
+          /*
           if(result.error)
             alert( "Error "+result.error.code+": "+result.error.message);
           else if(result.translation)
+          */
+          
+          if(!result.error && result.translation)
             Ext.getCmp('toText').setRawValue( result.translation );
+          
           // Notify if the text was too long
           if(text.length > MAX_TEXT)
             alert("Warning: The source text exceeded maximum "+MAX_TEXT+" characters! "+
